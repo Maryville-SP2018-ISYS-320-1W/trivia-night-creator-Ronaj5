@@ -43,14 +43,41 @@ public class SlideShowBuilder {
 	    }
 	}
 
-	public void buildSlideShow(String[] categories, String[] questions, String[] answers, String fileName) {
+	public void buildCategorySlideShow(String[] categories, String[] questions, String[] answers, String fileName) {
+		XMLSlideShow ppt = new XMLSlideShow();
+		XSLFSlideMaster defaultMaster = ppt.getSlideMasters().get(0);
+		
+		// added loop for question only and removed answers from the loop
+		for (int i = 0; i < 10; i++) {	
+			makeRoundSlide(ppt, defaultMaster, "Round " + (i+1));   
+			for (int j = 0; j < 10; j++) {
+				makeQuestSlide(ppt, defaultMaster, categories[i], questions[i * 10 + j]);
+			}
+
+			makeRoundSlide(ppt, defaultMaster, "Answers to Round " + (i+1)); 
+			for (int j = 0; j < 10; j++) {
+				makeQuestSlide(ppt, defaultMaster, categories[i], questions[i * 10 + j]); // added a loop for questions only
+				makeSlide(ppt, defaultMaster, categories[i], questions[i * 10 + j], answers[i * 10 + j]); //
+			}
+		}
+		
+	    savePPTX(ppt, fileName);
+	}
+	
+	public void buildRoundSlideShow(String[] categories, String[] questions, String[] answers, String fileName) {
 		XMLSlideShow ppt = new XMLSlideShow();
 		XSLFSlideMaster defaultMaster = ppt.getSlideMasters().get(0);
 		
 		for (int i = 0; i < 10; i++) {
 			makeRoundSlide(ppt, defaultMaster, "Round " + (i+1));
 			for (int j = 0; j < 10; j++) {
-				makeSlide(ppt, defaultMaster, categories[i], questions[i * 10 + j], answers[i * 10 + j]);
+				makeQuestSlide(ppt, defaultMaster, categories[j], questions[i]);
+			}
+			//added a loop for Answer Title slid for each round
+			makeRoundSlide(ppt, defaultMaster, "Answers to Round " + (i+1));  
+			for (int j = 0; j < 10; j++) {
+				makeQuestSlide(ppt, defaultMaster, categories[j], questions[i]); // create slide with questions only
+				makeSlide(ppt, defaultMaster, categories[j], questions[i], answers[i]); //create slide with Q & A
 			}
 		}
 		
@@ -86,6 +113,21 @@ public class SlideShowBuilder {
 		answer1.setAnchor(new Rectangle2D.Double(16.988740, 366.810787, 685.011260, 74.918976));
 		answer1.setText(answer).setFontSize(36.0d);
 		answer1.setHorizontalCentered(true);
+}
+	
+	private static void makeQuestSlide(XMLSlideShow ppt, XSLFSlideMaster master, String title, String question) {
+		XSLFSlideLayout blankSlide = master.getLayout(SlideLayout.BLANK);
+		XSLFSlide slide = ppt.createSlide(blankSlide);
+
+		XSLFTextShape header = slide.createTextBox();
+		header.setAnchor(new Rectangle2D.Double(16.988740, 17.797717, 685.011260, 50.892205));
+		header.setText(title).setFontSize(36.0d);
+		header.setHorizontalCentered(true);
+
+		XSLFTextShape question1 = slide.createTextBox();
+		question1.setAnchor(new Rectangle2D.Double(16.988740, 68.689921, 685.011260, 298.120866));
+		question1.setText(question).setFontSize(44.0);
+		question1.setHorizontalCentered(true);
 }
 
 	private void savePPTX(XMLSlideShow ppt, String filePath) {

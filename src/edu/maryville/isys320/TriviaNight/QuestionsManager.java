@@ -30,8 +30,8 @@ public class QuestionsManager {
 					answers.add(fs.nextLine());
 					fs.nextLine();
 				}
-				
-				if (questCount < 10)  //added if else to check questions more or less than 10
+				//added if else to check questions more or less than 10
+				if (questCount < 10)  
 					System.out.println("Category " + fileName + " has less than 10 questions");
 				else if (questCount > 10)
 					System.out.println("Category " + fileName + " has more than 10 questions");
@@ -39,10 +39,10 @@ public class QuestionsManager {
 				questCount = 0; // reset counter
 				
 				fs.close();
-
+				//adjusted code to print user friendly error message
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				System.out.println("File Not Found");  //adjusted code to print user friendly error message
+				System.out.println("File Not Found");  
 			}
 			
 		}
